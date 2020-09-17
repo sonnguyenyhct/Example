@@ -6,34 +6,19 @@ import java.util.Scanner;
 
 public class BookShelves {
     public static void main(String[] args) {
-        ProgrammingBook java = new ProgrammingBook(1,"Java",100000,"James","java","Spring");
-        ProgrammingBook php = new ProgrammingBook(2,"PHP",90000,"Harry","java","laravel");
-        ProgrammingBook javascript = new ProgrammingBook(3,"Javascript",80000,"Brendan","javascript","Angular");
-        ProgrammingBook python = new ProgrammingBook(4,"Python",70000,"David","python","Django");
-        ProgrammingBook ruby = new ProgrammingBook(5,"Ruby",60000,"Yukihiro","ruby","Ruby on Rails");
-
-        FictionBook blackMemory = new FictionBook(6,"Black Memory",120000,"Jennifer Egan","Fiction");
-        FictionBook myBrilliantFriend = new FictionBook(7,"My Brilliant Friend",30000,"Elena Ferrante","Fiction");
-        FictionBook goneGirl = new FictionBook(8,"Gone Girl",50000,"Gillian Flynn","Fiction");
-        FictionBook theTestaments = new FictionBook(9,"The Testaments",80000,"Margret Atwood","Fiction");
-        FictionBook theSilentPatient = new FictionBook(10,"The Silent Patient",60000,"Alex Michaelides","Fiction");
 
         List<Book> bookList = new ArrayList<>();
-        List<ProgrammingBook> programmingBookList = new ArrayList<>();
-        List<FictionBook> fictionBookList = new ArrayList<>();
-        programmingBookList.add(java);
-        programmingBookList.add(php);
-        programmingBookList.add(javascript);
-        programmingBookList.add(python);
-        programmingBookList.add(ruby);
-        fictionBookList.add(blackMemory);
-        fictionBookList.add(myBrilliantFriend);
-        fictionBookList.add(goneGirl);
-        fictionBookList.add(theTestaments);
-        fictionBookList.add(theSilentPatient);
-        bookList.addAll(programmingBookList);
-        bookList.addAll(fictionBookList);
 
+        bookList.add(new ProgrammingBook(1,"Java",100000,"James","java","Spring"));
+        bookList.add(new ProgrammingBook(2,"Php",90000,"Harry","php","laravel"));
+        bookList.add(new ProgrammingBook(3,"Javascript",80000,"Brendan","javascript","Angular"));
+        bookList.add(new ProgrammingBook(4,"Python",70000,"David","python","Django"));
+        bookList.add(new ProgrammingBook(5,"Ruby",60000,"Yukihiro","ruby","Ruby on Rails"));
+        bookList.add(new FictionBook(6,"Black Memory",120000,"Jennifer Egan","Fiction"));
+        bookList.add(new FictionBook(7,"My Brilliant Friend",30000,"Elena Ferrante","Fiction"));
+        bookList.add(new FictionBook(8,"Gone Girl",50000,"Gillian Flynn","Fiction"));
+        bookList.add(new FictionBook(9,"The Testaments",80000,"Margret Atwood","Fiction"));
+        bookList.add(new FictionBook(10,"The Silent Patient",60000,"Alex Michaelides","Fiction"));
 
         //Tổng tiền.
         long total = 0;
@@ -45,9 +30,12 @@ public class BookShelves {
         //đếm số sách ProgrammingBook có language là "Java"
         int count = 0;
 
-        for (ProgrammingBook programmingBook : programmingBookList) {
-            if (programmingBook.getLanguage().equals("java")){
-                count++;
+        for (Book book : bookList) {
+            boolean check1 = book instanceof ProgrammingBook;
+            if (check1) {
+                if (((ProgrammingBook) book).getLanguage().equals("java")) {
+                    count++;
+                }
             }
         }
         System.out.println("Số sách ProgrammingBook có language là Java là : " + count);
@@ -121,15 +109,34 @@ public class BookShelves {
             System.out.print(book.getPrice() + " , ");
         }
 
-        //Tìm kiếm giá của cuốn sách có tên được nhập vào từ bán phím theo tìm kiếm nhị phân.
+        //Tìm kiếm tên của cuốn sách có giá được nhập vào từ bàn phím theo tìm kiếm nhị phân.
 
-        System.out.println("Nhập vào tên cuốn sách cần tìm");
-        String nameBook1 = scanner.nextLine();
-        int i = bookList.size();
+        System.out.println();
+        System.out.println("Nhập vào giá cuốn sách cần tìm");
+        double price = scanner.nextDouble();
 
-        for (Book book : bookList) {
-            System.out.println(book.getName());
+        BookShelves bookShelves = new BookShelves();
+        int index = bookShelves.findPriceBook(bookList,0,bookList.size()-1,price);
+        if (index != -1){
+            System.out.println("Sách có giá tiền : " + price + " là : " + bookList.get(index).getName());
+        }else {
+            System.out.println("Không tìm thấy sách.");
         }
 
+    }
+
+    public int findPriceBook(List<Book> bookList,int left, int right, double price) {
+        if (right >= left){
+            int mid = (right + left)/2;
+            if (bookList.get(mid).getPrice() == price){
+                return mid;
+            }else if (bookList.get(mid).getPrice() < price){
+                return findPriceBook(bookList,left,mid-1,price);
+            }else{
+                return findPriceBook(bookList,mid+1,right,price);
+            }
+        }else {
+            return -1;
+        }
     }
 }
